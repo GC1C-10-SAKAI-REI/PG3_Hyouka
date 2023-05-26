@@ -1,30 +1,33 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
 //自己参照構造体
 typedef struct CELL
 {
-	int val;
+	char str[20];
 	CELL *next;
 }CELL;
 
 //最後尾にセルを追加する関数
-void Create(CELL *endCell,int val);
+void Create(CELL *endCell, const char *buf, const int strSize);
 //リストの一覧を表示する関数
 void Index(CELL *endCell);
 
 int main()
 {
-	int val;
+	const int strSize = 20;
+	char str[strSize];
 	//先頭に内容が空のセルを宣言
 	CELL head;
 	head.next = nullptr;
 
 	while (true)
 	{
-		scanf_s("%d", &val);
+		printf("好きなお寿司を入力してください\n_\n");
+		scanf_s("%s", &str, 20);
 		//最後尾にセルを追加
-		Create(&head, val);
+		Create(&head, str,strSize);
 		//リスト一覧を表示
 		Index(&head);
 	}
@@ -32,14 +35,14 @@ int main()
 	return 0;
 }
 
-void Create(CELL *endCell, int val)
+void Create(CELL *endCell, const char *buf, const int strSize)
 {
 	/*Step1.新規にセルを追加*/
 	CELL* newCell;
 
 	newCell = (CELL*)malloc(sizeof(CELL));
 
-	newCell->val = val;
+	strcpy_s(newCell->str, strSize, buf);
 	newCell->next = nullptr;
 
 	/*Step2.追加する前の最後尾を検索*/
@@ -59,7 +62,7 @@ void Index(CELL *endCell)
 	{
 		//nextに何か値が入っている間出力
 		endCell = endCell->next;
-		printf("%d", endCell->val);
+		printf("%s", endCell->str);
 		if (endCell->next != NULL)
 		{
 			printf(",");
