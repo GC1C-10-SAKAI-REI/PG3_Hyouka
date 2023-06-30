@@ -17,11 +17,11 @@ enum Scene
 	DELETE
 };
 
-//最後尾にセルを追加する関数
-void Create(CELL *endCell, const char *buf, const int strSize,bool &processEnd);
 //リストの一覧を表示する関数
 void Index(CELL *endCell, bool &processEnd);
-//
+//最後尾にセルを追加する関数
+void Create(CELL *endCell, const char *buf, const int strSize,bool &processEnd);
+//リストの最後尾を削除
 void Delete(CELL *endCell, bool &processEnd);
 
 int main()
@@ -33,6 +33,7 @@ int main()
 
 	Scene scene = START;
 	float select = 0;
+	int val = 0;
 	//先頭に内容が空のセルを宣言
 	CELL head;
 	head.next = nullptr;
@@ -43,14 +44,12 @@ int main()
 		{
 		case START://初期メニュー
 
-			select = 0;
 			printf("[要素の操作]\n");
 			printf("[1.要素の一覧表示]\n");
 			printf("[2.最後尾に要素の挿入]\n");
 			printf("[3.最後尾の要素の削除]\n\n");
 			printf("----------------------\n");
 			printf("操作を選択してください\n");
-			
 			scanf_s("%f", &select);
 
 			if (select == 1.0f)
@@ -67,10 +66,6 @@ int main()
 			{
 				processEnd = false;
 				scene = DELETE;
-			}
-			else
-			{
-				printf("\n1~3の整数で選んで下さい\n\n");
 			}
 
 			break;
@@ -107,8 +102,7 @@ int main()
 				printf("要素[%s]がリストの最後尾に挿入されました\n", str);
 				printf("----------------------\n");
 				Create(&head, str, strSize,processEnd);
-			}
-			
+			}			
 
 			printf("9.要素操作に戻る\n");
 			scanf_s("%f", &select);
@@ -125,16 +119,35 @@ int main()
 
 		case DELETE:
 
+			if (!processEnd)
+			{
+				printf("[要素の削除]\n\n");
+				printf("最後尾の要素を削除しました\n");
+				printf("----------------------\n");
+				Delete(&head, processEnd);
+			}
 
+			printf("9.要素操作に戻る\n");
+			scanf_s("%f", &select);
+			if (select == 9.0f)
+			{
+				scene = START;
+			}
+			else
+			{
+				printf("\n9を選んで下さい\n\n");
+			}
+
+			break;
+
+		default:
+
+			printf("意図しない入力が行われました。初期メニューに戻ります\n");
+
+			scene = START;
 
 			break;
 		}
-		//printf("好きなお寿司を入力してください\n_\n");
-		//scanf_s("%s", &str, 20);
-		////最後尾にセルを追加
-		//Create(&head, str,strSize);
-		////リスト一覧を表示
-		//Index(&head);
 	}
 
 	return 0;
@@ -169,11 +182,7 @@ void Index(CELL *endCell, bool &processEnd)
 	processEnd = true;
 }
 
-void Delete(CELL* endCell, bool& processEnd)
-{
-}
-
-void Create(CELL *endCell, const char *buf, const int strSize, bool &processEnd)
+void Create(CELL* endCell, const char* buf, const int strSize, bool& processEnd)
 {
 	/*Step1.新規にセルを追加*/
 	CELL* newCell;
@@ -184,7 +193,7 @@ void Create(CELL *endCell, const char *buf, const int strSize, bool &processEnd)
 	newCell->next = nullptr;
 
 	/*Step2.追加する前の最後尾を検索*/
-	while (endCell->next !=NULL)
+	while (endCell->next != NULL)
 	{
 		endCell = endCell->next;
 	}
@@ -193,4 +202,17 @@ void Create(CELL *endCell, const char *buf, const int strSize, bool &processEnd)
 	endCell->next = newCell;
 
 	processEnd = true;
+}
+
+void Delete(CELL *endCell, bool &processEnd)
+{
+	CELL *prevCell;
+	prevCell = (CELL*)malloc(sizeof(CELL));
+	while (endCell->next != NULL)
+	{
+		prevCell = endCell;
+		endCell = endCell->next;
+	}
+	free; endCell;
+	prevCell->next = nullptr;
 }
