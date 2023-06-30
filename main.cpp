@@ -5,7 +5,7 @@
 //Ž©ŒÈŽQÆ\‘¢‘Ì
 typedef struct CELL
 {
-	char str[20];
+	char str[100];
 	CELL *next;
 }CELL;
 
@@ -18,18 +18,21 @@ enum Scene
 };
 
 //ÅŒã”ö‚ÉƒZƒ‹‚ð’Ç‰Á‚·‚éŠÖ”
-void Create(CELL *endCell, const char *buf, const int strSize);
+void Create(CELL *endCell, const char *buf, const int strSize,bool &processEnd);
 //ƒŠƒXƒg‚Ìˆê——‚ð•\Ž¦‚·‚éŠÖ”
-void Index(CELL *endCell);
+void Index(CELL *endCell, bool &processEnd);
+//
+void Delete(CELL *endCell, bool &processEnd);
 
 int main()
 {
-	const int strSize = 20;
+	const int strSize = 100;
 	char str[strSize];
-	int strVal = 0;
+	float strVal = 0;
+	bool processEnd = false;
 
 	Scene scene = START;
-	int select = 0;
+	float select = 0;
 	//æ“ª‚É“à—e‚ª‹ó‚ÌƒZƒ‹‚ðéŒ¾
 	CELL head;
 	head.next = nullptr;
@@ -38,56 +41,92 @@ int main()
 	{
 		switch (scene)
 		{
-		case START:
+		case START://‰Šúƒƒjƒ…[
 
+			select = 0;
 			printf("[—v‘f‚Ì‘€ì]\n");
 			printf("[1.—v‘f‚Ìˆê——•\Ž¦]\n");
 			printf("[2.ÅŒã”ö‚É—v‘f‚Ì‘}“ü]\n");
 			printf("[3.ÅŒã”ö‚Ì—v‘f‚Ìíœ]\n\n");
 			printf("----------------------\n");
 			printf("‘€ì‚ð‘I‘ð‚µ‚Ä‚­‚¾‚³‚¢\n");
-			scanf_s("%d", &select);
+			
+			scanf_s("%f", &select);
 
-			if (select == 1)
+			if (select == 1.0f)
 			{
+				processEnd = false;
 				scene = INDEX;
-				break;
 			}
-			else if (select == 2)
+			else if (select == 2.0f)
 			{
+				processEnd = false;
 				scene = INSERT;
-				break;
 			}
-			else if (select == 3)
+			else if (select == 3.0f)
 			{
+				processEnd = false;
 				scene = DELETE;
-				break;
 			}
 			else
 			{
-				printf("1~3‚Ì®”‚Å‘I‚ñ‚Å‰º‚³‚¢\n");
-				scanf_s("%d", &select);
-				break;
+				printf("\n1~3‚Ì®”‚Å‘I‚ñ‚Å‰º‚³‚¢\n\n");
 			}
 
 			break;
 
-		case INDEX:
+		case INDEX://—v‘f‚Ì•\Ž¦
 
-			Index(&head);
-			printf("9.—v‘f‘€ì‚É–ß‚é\n");
-			scanf_s("%d", &select);
-			if (select == 9)
+			if (!processEnd)
+			{
+				Index(&head,processEnd);
+				printf("9.—v‘f‘€ì‚É–ß‚é\n");
+			}
+			
+			scanf_s("%f", &select);
+			if (select == 9.0f)
 			{
 				scene = START;
 			}
+			else
+			{
+				printf("9‚ð‘I‚ñ‚Å‚­‚¾‚³‚¢\n");
+			}
 
 			break;
-		case INSERT:
+
+		case INSERT://‘}“ü
+
+			if (!processEnd)
+			{
+				printf("[ƒŠƒXƒg—v‘f‚Ì‘}“ü]\n\n");
+				printf("’Ç‰Á‚·‚é—v‘f‚Ì’l‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢\n");
+
+				scanf_s("%s", &str, 20);
+				//ÅŒã”ö‚ÉƒZƒ‹‚ð’Ç‰Á
+				printf("—v‘f[%s]‚ªƒŠƒXƒg‚ÌÅŒã”ö‚É‘}“ü‚³‚ê‚Ü‚µ‚½\n", str);
+				printf("----------------------\n");
+				Create(&head, str, strSize,processEnd);
+			}
+			
+
+			printf("9.—v‘f‘€ì‚É–ß‚é\n");
+			scanf_s("%f", &select);
+			if (select == 9.0f)
+			{
+				scene = START;
+			}
+			else
+			{
+				printf("\n9‚ð‘I‚ñ‚Å‰º‚³‚¢\n\n");
+			}
+
 			break;
+
 		case DELETE:
-			break;
-		default:
+
+
+
 			break;
 		}
 		//printf("D‚«‚È‚¨ŽõŽi‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢\n_\n");
@@ -101,7 +140,40 @@ int main()
 	return 0;
 }
 
-void Create(CELL *endCell, const char *buf, const int strSize)
+void Index(CELL *endCell, bool &processEnd)
+{
+	int cellNumber = 0;
+
+	printf("[—v‘f‚Ìˆê——•\Ž¦]\n");
+
+	printf("—v‘fˆê—— : {\n");
+	while (endCell->next != NULL)
+	{
+		//next‚É‰½‚©’l‚ª“ü‚Á‚Ä‚¢‚éŠÔo—Í
+		endCell = endCell->next;
+		printf("%d : [%s]", cellNumber, endCell->str);
+		if (endCell->next != NULL)
+		{
+			printf(",\n");
+		}
+		cellNumber++;
+	}
+	printf("\n}\n");
+
+	if (cellNumber == 0)
+	{		
+		printf("—v‘fˆê—— : —v‘f–³‚µ\n");
+	}
+	printf("—v‘f” : %d\n", cellNumber);
+	printf("----------------------\n");
+	processEnd = true;
+}
+
+void Delete(CELL* endCell, bool& processEnd)
+{
+}
+
+void Create(CELL *endCell, const char *buf, const int strSize, bool &processEnd)
 {
 	/*Step1.V‹K‚ÉƒZƒ‹‚ð’Ç‰Á*/
 	CELL* newCell;
@@ -119,38 +191,6 @@ void Create(CELL *endCell, const char *buf, const int strSize)
 
 	/*Step3.’Ç‰Á‚·‚é‘O‚ÌÅŒã”ö‚ÉV‹KƒZƒ‹‚Ìƒ|ƒCƒ“ƒ^‚ð‘ã“ü*/
 	endCell->next = newCell;
-}
 
-void Index(CELL *endCell)
-{
-	int cellVal = 0;
-	int cellNumber = 0;
-
-	printf("[—v‘f‚Ìˆê——•\Ž¦]");
-	while (endCell->next != NULL)
-	{
-		cellVal++;
-	}
-	printf("—v‘f” : %d\n", cellVal);
-	if (cellVal == 0)
-	{
-		printf("—v‘fˆê—— : —v‘f–³‚µ\n");
-	}
-	else
-	{
-		printf("—v‘fˆê—— : {");
-		while (endCell->next != NULL)
-		{
-			//next‚É‰½‚©’l‚ª“ü‚Á‚Ä‚¢‚éŠÔo—Í
-			endCell = endCell->next;
-			printf("%d : [%s]", cellNumber, endCell->str);
-			if (endCell->next != NULL)
-			{
-				printf(",\n");
-			}
-			cellNumber++;
-		}
-		printf("}\n");
-	}
-	printf("----------------------\n");
+	processEnd = true;
 }
