@@ -26,14 +26,17 @@ void Delete(CELL *endCell, bool &processEnd);
 
 int main()
 {
+	//
 	const int strSize = 100;
 	char str[strSize];
+	//
 	float strVal = 0;
 	bool processEnd = false;
-
-	Scene scene = START;
+	//シーン選択用
 	float select = 0;
-	int val = 0;
+	//シーン管理用
+	Scene scene = START;
+
 	//先頭に内容が空のセルを宣言
 	CELL head;
 	head.next = nullptr;
